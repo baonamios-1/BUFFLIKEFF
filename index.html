@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TLZ Like Tool</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 15px;
+    font-family: Arial, sans-serif;
+    background: #0b1220;
+    color: #e5eaf2;
+}
+
+.container {
+    max-width: 430px;
+    margin: 20px auto;
+    border: 2px solid #28baff;
+    border-radius: 22px;
+    padding: 16px;
+    background: #111c2c;
+    box-shadow: 0 0 18px #00aaff25;
+}
+
+.notice {
+    text-align: center;
+    border: 1px dashed #29baff;
+    padding: 12px;
+    color: #35c5ff;
+    font-weight: bold;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    margin: 12px 0 7px;
+    font-weight: bold;
+    color: #aab6c8;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    background: #0c1524;
+    color: white;
+    border: 1px solid #465365;
+    border-radius: 12px;
+    font-size: 16px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #28baff;
+    box-shadow: 0 0 8px #28baff35;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+button {
+    border: 0;
+    border-radius: 12px;
+    padding: 14px 10px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.getkey {
+    flex: 1;
+    background: #ffc400;
+    color: #101010;
+}
+
+.guide {
+    flex: 1;
+    background: #2868ee;
+    color: white;
+}
+
+.buff {
+    width: 100%;
+    margin-top: 18px;
+    padding: 18px;
+    background: linear-gradient(135deg, #31b8ef, #0786cc);
+    color: #071521;
+    font-size: 18px;
+}
+
+.info {
+    background: #1d2a3b;
+    border-left: 5px solid #27baff;
+    border-radius: 12px;
+    padding: 14px;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #c5ceda;
+}
+
+#result {
+    display: none;
+    margin-top: 15px;
+    padding: 14px;
+    text-align: center;
+    background: #12352d;
+    border: 1px solid #35dc9b;
+    border-radius: 12px;
+    color: #65f3b6;
+    line-height: 1.6;
+}
+
+#snow {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+</style>
+</head>
+
+<body>
+
+<canvas id="snow"></canvas>
+
+<div class="container">
+
+    <div class="notice">
+        🎄 TLZ LIKE SYSTEM 🎄
+    </div>
+
+    <label>Nhập ID Game (UID) của bạn:</label>
+    <input id="uid" placeholder="Nhập UID..." inputmode="numeric">
+
+    <div class="buttons">
+        <button class="getkey" onclick="getKey()">🔑 Lấy Key</button>
+        <button class="guide" onclick="showGuide()">🎬 Hướng Dẫn</button>
+    </div>
+
+    <label>Nhập Mã Key đã lấy:</label>
+    <input id="key" placeholder="TLZ-XXXX-XXXX">
+
+    <label style="color:#32baff;margin-top:20px">
+        🛡️ XÁC THỰC BẢO MẬT:
+    </label>
+
+    <button class="buff" onclick="buffLike()">
+        ⚡ TIẾN HÀNH BUFF LIKE ⚡
+    </button>
+
+    <div id="result"></div>
+
+    <div class="info">
+        📌 <b>THÔNG BÁO & LƯU Ý</b><br>
+        ⏳ Thời gian: 09:00 - 23:00<br>
+        📊 Mỗi lần thao tác mô phỏng: 220 like<br>
+        ⚠️ Vui lòng nhập đúng UID và Key.<br>
+        🔒 Key được gắn với UID trong phiên trình duyệt.
+    </div>
+
+</div>
+
+<script>
+const keyStore = {};
+
+function randomCode(length = 4) {
+    const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";
+    let result = "";
+    for (let i = 0; i < length; i++) {
+        result += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return result;
+}
+
+function getKey() {
+    const uid = document.getElementById("uid").value.trim();
+
+    if (!uid) {
+        alert("Vui lòng nhập UID trước!");
+        return;
+    }
+
+    if (!/^\d+$/.test(uid)) {
+        alert("UID chỉ được chứa số!");
+        return;
+    }
+
+    if (!keyStore[uid]) {
+        keyStore[uid] = "TLZ-" + randomCode() + "-" + randomCode();
+    }
+
+    document.getElementById("key").value = keyStore[uid];
+
+    alert("Tạo Key thành công!");
+}
+
+function buffLike() {
+    const uid = document.getElementById("uid").value.trim();
+    const key = document.getElementById("key").value.trim();
+    const result = document.getElementById("result");
+
+    result.style.display = "block";
+
+    if (!uid || !key) {
+        result.innerHTML = "❌ Vui lòng nhập UID và Key!";
+        return;
+    }
+
+    if (keyStore[uid] !== key) {
+        result.innerHTML = "❌ UID hoặc Key không hợp lệ!";
+        return;
+    }
+
+    result.innerHTML = `
+        ✅ BUFF LIKE THÀNH CÔNG!<br>
+        🆔 UID: ${uid}<br>
+        ⚡ +220 LIKE
+    `;
+}
+
+function showGuide() {
+    alert(
+        "HƯỚNG DẪN:\\n\\n" +
+        "1. Nhập UID Game.\\n" +
+        "2. Bấm Lấy Key.\\n" +
+        "3. Nhập Key vừa tạo.\\n" +
+        "4. Bấm Tiến hành Buff Like."
+    );
+}
+
+// Hiệu ứng tuyết
+const canvas = document.getElementById("snow");
+const ctx = canvas.getContext("2d");
+let snowflakes = [];
+
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    snowflakes = Array.from({length: 70}, () => ({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        r: Math.random() * 2.5 + 1,
+        speed: Math.random() * 1.2 + 0.4
+    }));
+}
+
+function drawSnow() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "rgba(255,255,255,0.7)";
+    
+    snowflakes.forEach(f => {
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        f.y += f.speed;
+        f.x += Math.sin(f.y * 0.01) * 0.4;
+
+        if (f.y > canvas.height) {
+            f.y = -5;
+            f.x = Math.random() * canvas.width;
+        }
+    });
+
+    requestAnimationFrame(drawSnow);
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+drawSnow();
+</script>
+
+</body>
+</html>
